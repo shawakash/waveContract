@@ -1,5 +1,6 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-ethers";
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   //@ts-ignore
