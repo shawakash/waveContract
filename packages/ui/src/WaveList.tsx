@@ -15,7 +15,7 @@ export const WavesList: React.FC<{ waves: Wave[] }> = ({ waves }) => {
                                 className="mb-6 p-4 rounded-lg bg-blue-100 hover:bg-blue-200 transition duration-300 ease-in-out"
                             >
                                 {wave.message.length > 0 && <p className="text-lg text-transparent bg-gradient-radial bg-clip-text  from-red-500 to-purple-500 font-semibold">{wave.message}</p>}
-                                <p className="text-gray-600 font-medium mb-2">{wave.name}</p>
+                                <p className="text-gray-500 font-medium mb-2">From {wave.name.trim().split(" ")[0]}, 👋🏻👋🏻👋🏻</p>
                                 <div className="flex justify-between items-center">
                                     <p className="text-sm text-gray-500">
                                         {wave.timestamp.toLocaleString()}

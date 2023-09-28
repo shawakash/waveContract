@@ -60,6 +60,8 @@ const findMetaMaskAccount = async (): Promise<string | null> => {
   }
 };
 
+export const contractAddress = '0x05e70eb193C663F3270c7Cb9Dd994923a2ce9a16';
+export const contractABI = abiJson.abi;
 
 export default function Home() {
 
@@ -67,8 +69,6 @@ export default function Home() {
   const [totalWaves, setTotalWaves] = useState<Number | null>(null);
   const [currentAccount, setCurrentAccount] = useState<string>("");
   const [loader, setLoader] = useState<Boolean>(false);
-  const contractAddress = '0xaC60240742A495Ba504Cc16D1Bf784c5f5a66445';
-  const contractABI = abiJson.abi;
 
   const connectWallet = async () => {
     try {
@@ -107,7 +107,7 @@ export default function Home() {
 
         // Waving
         //@ts-ignore
-        const waveTxn = await wavePortalContract.wave(name, message);
+        const waveTxn = await wavePortalContract.wave(name, message, { gasLimit: 300000 });
         const txnHash: string = waveTxn.hash;
         toast.promise(waveTxn.wait(), {
           loading: `Mining -- ${txnHash.slice(0, 3) + "..." + txnHash.slice(txnHash.length - 5, txnHash.length - 1)}`,
@@ -123,7 +123,6 @@ export default function Home() {
 
         count = await wavePortalContract.getTotalWaves();
         setTotalWaves(count);
-        await getAllWaves();
         console.log("Retrieved total wave count...", count);
 
       } else {
@@ -193,6 +192,39 @@ export default function Home() {
   }
 
   useEffect(() => {
+
+      
+      let wavePortalContract: any;
+      const ethereum = getEthereumObject();
+      const onNewWave = (from: string, timestamp: number, name: string, message: string) => {
+        console.log("NewWave", from, timestamp, message, name);
+        setAllWaves(prevState => [
+          {
+            address: from,
+            timestamp: new Date(Number(timestamp) * 1000),
+            message: message,
+            name: name
+          },
+          ...prevState,
+        ]);
+      };
+    
+      if (ethereum) {
+        const provider = new ethers.BrowserProvider(ethereum);
+        provider.getSigner().then(signer => {
+          wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+          wavePortalContract.on("NewWave", onNewWave);
+        });
+      }
+      
+    return () => {
+      if (wavePortalContract) {
+        wavePortalContract.off("NewWave", onNewWave);
+      }
+  }
+  }, []);
+
+  useEffect(() => {
     findMetaMaskAccount().then(async (account) => {
 
       if (account !== null) {
@@ -210,10 +242,10 @@ export default function Home() {
   }, [currentAccount]);
 
   const person = {
-    name: 'John Doe',
-    title: 'Web Developer',
+    name: 'Akash Shaw',
+    title: 'Developer, Creator',
     description:
-      'I am a web developer with expertise in front-end and back-end technologies. I enjoy creating responsive and user-friendly web applications.',
+      'I am a developer with expertise in front-end and back-end technologies. I enjoy creating systems and is currently learning web3.',
     imageUrl: 'https://avatars.githubusercontent.com/u/112852873?v=4', // Replace with the actual image URL
   };
 

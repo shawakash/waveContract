@@ -6,6 +6,7 @@ import "hardhat/console.sol";
 
 contract WavePortal {
     uint256 totalWaves;
+    uint256 private seed;
 
     struct WaveData {
         string name;
@@ -23,7 +24,12 @@ contract WavePortal {
         string addressString;
     }
 
-    event NewWave(address indexed from, uint256 timestamp, string message);
+    event NewWave(
+        address indexed from,
+        uint256 timestamp,
+        string name,
+        string message
+    );
 
     struct Wave {
         address waver; // The address of the user who waved.
@@ -38,12 +44,25 @@ contract WavePortal {
     mapping(address => WaveData) public waveData;
     address[] wavedAddress;
 
+    mapping(address => uint256) public lastWavedAt;
+
     constructor() payable {
         console.log("There starts the journey of a LEGEND! ");
         console.log(msg.sender);
+        seed = (block.timestamp + block.prevrandao) % 100;
     }
 
     function wave(string memory _name, string memory _message) public {
+        require(
+            lastWavedAt[msg.sender] + 30 seconds < block.timestamp,
+            "Must wait 30 seconds before waving again."
+        );
+
+        /*
+         * Update the current timestamp we have for the user
+         */
+        lastWavedAt[msg.sender] = block.timestamp;
+
         totalWaves += 1;
         console.log("%s waved w/ message %s", msg.sender, _message);
 
@@ -65,15 +84,33 @@ contract WavePortal {
         }
 
         console.log("%s has waved!", msg.sender);
-        emit NewWave(msg.sender, block.timestamp, _message);
+        seed = (block.prevrandao + block.timestamp + seed) % 100;
 
-        uint256 prizeAmount = 0.0001 ether;
-        require(
-            prizeAmount <= address(this).balance,
-            "Trying to withdraw more money than the contract has."
-        );
-        (bool success, ) = (msg.sender).call{value: prizeAmount}("");
-        require(success, "Failed to withdraw money from contract.");
+        console.log("Random # generated: %d", seed);
+
+        /*
+         * Give a 50% chance that the user wins the prize.
+         */
+        if (seed <= 50) {
+            console.log("%s won!", msg.sender);
+
+            /*
+             * The same code we had before to send the prize.
+             */
+            uint256 prizeAmount = 0.0001 ether;
+            require(
+                prizeAmount <= address(this).balance,
+                "Trying to withdraw more money than the contract has."
+            );
+            (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+            require(success, "Failed to withdraw money from contract.");
+        }
+
+        if (bytes(_name).length == 0) {
+            emit NewWave(msg.sender, block.timestamp, "Anonymus", _message);
+        } else {
+            emit NewWave(msg.sender, block.timestamp, _name, _message);
+        }
     }
 
     function getAllWaves() public view returns (Wave[] memory) {

@@ -23,21 +23,18 @@ const main = async () => {
     );
     console.log("Contract balance:", hre.ethers.formatEther(contractBalance), 'eth');
 
-    /*
-     * Send Wave
-     */
-    let waveTxn = await waveContract.wave("", "A message!");
+    const waveTxn = await waveContract.wave("", "This is wave #1");
     await waveTxn.wait();
-
-    /*
-     * Get Contract balance to see what happened!
-     */
+  
+    const waveTxn2 = await waveContract.wave("" ,"This is wave #2");
+    await waveTxn2.wait();
+  
     contractBalance = await hre.ethers.provider.getBalance(contractAddress);
     console.log(
-        "Contract balance:",
-        hre.ethers.formatEther(contractBalance)
+      "Contract balance:",
+      hre.ethers.formatEther(contractBalance)
     );
-
+  
     let allWaves = await waveContract.getAllWaves();
     console.log(allWaves);
 };

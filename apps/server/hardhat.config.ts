@@ -32,6 +32,7 @@ const config: HardhatUserConfig = {
       accounts: [SEPOLIA_ACCOUNT_PRIVATE_KEY]
     },
     mainnet: {
+      chainId: 1,
       url: PROD_API_URL,
       accounts: [MAINNET_PRIVATE_KEY || ''],
     }
