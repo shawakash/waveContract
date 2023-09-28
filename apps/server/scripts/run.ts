@@ -1,27 +1,42 @@
 import hre from 'hardhat';
 
 const main = async () => {
+    //@ts-ignore
     const [owner, randomPerson] = await hre.ethers.getSigners();
+
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-    const waveContract = await waveContractFactory.deploy();
+    const waveContract = await waveContractFactory.deploy({
+        value: hre.ethers.parseEther("0.1"),
+    });
     await waveContract.waitForDeployment();
+    const contractAddress = await waveContract.getAddress();
+
     console.log("Contract deployed to:", await waveContract.getAddress());
     console.log("Contract deployed by:", owner.address);
 
     await waveContract.getTotalWaves();
 
-    const firstWaveTxn = await waveContract.wave("owner", "hola");
-    await firstWaveTxn.wait();
+    // const firstWaveTxn = await waveContract.wave("owner", "hola");
+    // await firstWaveTxn.wait();
+    let contractBalance = await hre.ethers.provider.getBalance(
+       contractAddress
+    );
+    console.log("Contract balance:", hre.ethers.formatEther(contractBalance), 'eth');
 
-    /**
-   * Let's send a few waves!
-   */
+    /*
+     * Send Wave
+     */
     let waveTxn = await waveContract.wave("", "A message!");
-    await waveTxn.wait(); // Wait for the transaction to be mined
+    await waveTxn.wait();
 
-    const [_, randomPerson2] = await hre.ethers.getSigners();
-    waveTxn = await waveContract.connect(randomPerson2).wave("", "Another message!");
-    await waveTxn.wait(); // Wait for the transaction to be mined
+    /*
+     * Get Contract balance to see what happened!
+     */
+    contractBalance = await hre.ethers.provider.getBalance(contractAddress);
+    console.log(
+        "Contract balance:",
+        hre.ethers.formatEther(contractBalance)
+    );
 
     let allWaves = await waveContract.getAllWaves();
     console.log(allWaves);

@@ -67,7 +67,7 @@ export default function Home() {
   const [totalWaves, setTotalWaves] = useState<Number | null>(null);
   const [currentAccount, setCurrentAccount] = useState<string>("");
   const [loader, setLoader] = useState<Boolean>(false);
-  const contractAddress = '0x2A2ED2F9F5Df8fA8442426c1618e2792972F3eDC';
+  const contractAddress = '0xaC60240742A495Ba504Cc16D1Bf784c5f5a66445';
   const contractABI = abiJson.abi;
 
   const connectWallet = async () => {
