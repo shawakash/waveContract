@@ -1,6 +1,12 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { FormEvent, LegacyRef, useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
+import { ethers } from 'ethers';
+import abiJson from '../utils/WavePortal.json';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import {PersonIntroduction, WaveForm} from "ui"
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,10 +46,15 @@ const findMetaMaskAccount = async (): Promise<string | null> => {
   }
 };
 
+
 export default function Home() {
 
   const nameRef = useRef(null);
+  const [totalWaves, setTotalWaves] = useState<Number | null>(null);
   const [currentAccount, setCurrentAccount] = useState<string>("");
+  const [loader, setLoader] = useState<Boolean>(false);
+  const contractAddress = '0x1F46a2A44dC23cF403821AF6c4516dd54830aeC9';
+  const contractABI = abiJson.abi;
 
   const connectWallet = async () => {
     try {
@@ -64,13 +75,85 @@ export default function Home() {
     }
   };
 
+  const wave = async (e: FormEvent) => {
+    try {
+      e.preventDefault();
+
+      const ethereum = getEthereumObject();
+      if (ethereum) {
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        setLoader(true);
+        toast.success("Directing to Metamask!")
+
+        let count = await wavePortalContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count);
+
+        // Waving
+        //@ts-ignore
+        const waveTxn = await wavePortalContract.wave(nameRef?.current?.value);
+        const txnHash: string = waveTxn.hash;
+        toast.promise(waveTxn.wait(), {
+          loading: `Mining -- ${txnHash.slice(0, 3) + "..." + txnHash.slice(txnHash.length - 5, txnHash.length - 1)}`,
+          success: `Minned -- ${txnHash.slice(0, 3) + "..." + txnHash.slice(txnHash.length - 5, txnHash.length - 1)}`,
+          error: "Some Problem"
+        });
+        console.log("Mining...", waveTxn.hash);
+
+        await waveTxn.wait();
+        console.log("Mined -- ", waveTxn.hash);
+
+        setLoader(false);
+
+        count = await wavePortalContract.getTotalWaves();
+        setTotalWaves(count);
+        console.log("Retrieved total wave count...", count);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const getTotalWaves = async () => {
+    try {
+      const ethereum = getEthereumObject();
+      if (ethereum) {
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const waveContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const totalWaves = await waveContract.getTotalWaves();
+        console.log("Total Waves: ", totalWaves);
+        return totalWaves;
+      }
+
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
   useEffect(() => {
-    findMetaMaskAccount().then((account) => {
+    findMetaMaskAccount().then(async (account) => {
+
       if (account !== null) {
         setCurrentAccount(account);
       }
     });
-  }, []);
+
+    if (currentAccount) {
+      getTotalWaves().then(waves => {
+        setTotalWaves(waves);
+      });
+    }
+
+  }, [currentAccount]);
 
   const person = {
     name: 'John Doe',
@@ -80,9 +163,6 @@ export default function Home() {
     imageUrl: 'https://avatars.githubusercontent.com/u/112852873?v=4', // Replace with the actual image URL
   };
 
-  const handleWave = (e: FormEvent) => {
-    e.preventDefault();
-  }
 
   return (
     <main
@@ -93,10 +173,11 @@ export default function Home() {
         title={person.title}
         description={person.description}
         imageUrl={person.imageUrl}
+        totalWaves={totalWaves}
       />
 
       <WaveForm
-        handleWave={handleWave}
+        handleWave={wave}
         nameRef={nameRef}
         currentAccount={currentAccount}
         connectWallet={connectWallet}
@@ -106,70 +187,6 @@ export default function Home() {
   );
 }
 
-const PersonIntroduction: React.FC<{
-  name: string,
-  title: string,
-  description: string,
-  imageUrl: string,
-}> = ({ name, title, description, imageUrl }) => {
-  return (
-    <div className="bg-white w-[1000px] rounded-lg shadow-md p-6 hover:shadow-xl transition-all duration-300">
-      <div className="flex flex-col items-center sm:flex-row">
-        <img
-          src={imageUrl}
-          alt={`${name}'s profile`}
-          className="w-16 h-16 rounded-full mb-4 sm:mb-0 sm:mr-4 sm:w-32 sm:h-32"
-        />
-        <div className="text-center sm:text-left">
-          <h2 className="text-xl font-semibold">{name}</h2>
-          <p className="text-gray-600">{title}</p>
-        </div>
-      </div>
-      <p className="mt-4">{description}</p>
-    </div>
-  );
-};
 
-const WaveForm: React.FC<{
-  handleWave: (e: FormEvent) => void,
-  nameRef: LegacyRef<HTMLInputElement> | undefined,
-  currentAccount: string,
-  connectWallet: () => void
-}> =
-  ({ handleWave, nameRef, currentAccount, connectWallet }) => {
-    return (
-      <>
-        <div className="w-[1000px]">
-          <form onSubmit={handleWave} className="bg-white hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-gray-600 font-semibold">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="w-full border rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
-                placeholder="Enter your name"
-                required
-                ref={nameRef}
-              />
-            </div>
-            <div className="flex flex-row gap-x-5">
-              {!currentAccount && (
-                <button className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200" onClick={connectWallet}>
-                  Connect Wallet 
-                </button>
-              )}
-              <button
-                type="submit"
-                className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200"
-              >
-                Wave to me 👋🏻👋🏻👋🏻
-              </button>
-            </div>
-          </form >
-        </div >
-      </>
-    );
-  }
+
+
