@@ -1,16 +1,44 @@
-import React, { FormEvent, LegacyRef } from "react";
+import React, { FormEvent, LegacyRef, useRef } from "react";
+
+export type Wave = {
+  address: string,
+  timestamp: object,
+  name: string,
+  message: string
+}
+
+export type WaveRequestData = {
+  name: string,
+  message: string
+}
 
 export const WaveForm: React.FC<{
-    handleWave: (e: FormEvent) => void,
-    nameRef: LegacyRef<HTMLInputElement> | undefined,
+    handleWave: (data: WaveRequestData) => void,
     currentAccount: string,
-    connectWallet: () => void
+    connectWallet: () => void,
   }> =
-    ({ handleWave, nameRef, currentAccount, connectWallet }) => {
+    ({ handleWave, currentAccount, connectWallet }) => {
+
+      const nameRef = useRef<HTMLInputElement>(null);
+      const messageRef = useRef<HTMLTextAreaElement>(null);
+
+      const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+
+        const data = {
+          //@ts-ignore
+          name: nameRef.current.value,
+          //@ts-ignore
+          message: messageRef.current.value
+        };
+
+        handleWave(data);
+      }
+
       return (
         <>
           <div className="w-[1000px]">
-            <form onSubmit={handleWave} className="bg-white hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
+            <form onSubmit={handleSubmit} className="bg-white hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
               <div className="mb-4">
                 <label htmlFor="name" className="block text-gray-600 font-semibold">
                   Name
@@ -23,6 +51,21 @@ export const WaveForm: React.FC<{
                   placeholder="Enter your name"
                   defaultValue={""}
                   ref={nameRef}
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="message" className="block text-gray-600 font-semibold">
+                  Message
+                </label>
+                <textarea
+                  rows={2}
+                  id="message"
+                  name="message"
+                  className="w-full border rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
+                  placeholder="Your Message"
+                  defaultValue={""}
+                  required
+                  ref={messageRef}
                 />
               </div>
               <div className="flex flex-row gap-x-5">

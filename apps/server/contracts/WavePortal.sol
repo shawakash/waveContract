@@ -23,6 +23,17 @@ contract WavePortal {
         string addressString;
     }
 
+    event NewWave(address indexed from, uint256 timestamp, string message);
+
+    struct Wave {
+        address waver; // The address of the user who waved.
+        string name;
+        string message; // The message the user sent.
+        uint256 timestamp; // The timestamp when the user waved.
+    }
+
+    Wave[] waves;
+
     // Mapping from address to WaveData
     mapping(address => WaveData) public waveData;
     address[] wavedAddress;
@@ -32,8 +43,15 @@ contract WavePortal {
         console.log(msg.sender);
     }
 
-    function wave(string memory _name) public {
+    function wave(string memory _name, string memory _message) public {
         totalWaves += 1;
+        console.log("%s waved w/ message %s", msg.sender, _message);
+
+        if (bytes(_name).length == 0) {
+            waves.push(Wave(msg.sender, "Anonymus", _message, block.timestamp));
+        } else {
+            waves.push(Wave(msg.sender, _name, _message, block.timestamp));
+        }
 
         wavedAddress.push(msg.sender);
         waveData[msg.sender].waveCount += 1;
@@ -47,6 +65,11 @@ contract WavePortal {
         }
 
         console.log("%s has waved!", msg.sender);
+        emit NewWave(msg.sender, block.timestamp, _message);
+    }
+
+    function getAllWaves() public view returns (Wave[] memory) {
+        return waves;
     }
 
     function getTotalWaves() public view returns (uint256) {
@@ -56,7 +79,9 @@ contract WavePortal {
 
     function getWaversData() public view returns (ReturnWaveData[] memory) {
         uint256 numWaved = wavedAddress.length;
-        ReturnWaveData[] memory uniqueWavesData = new ReturnWaveData[](numWaved);
+        ReturnWaveData[] memory uniqueWavesData = new ReturnWaveData[](
+            numWaved
+        );
 
         uint256 uniqueCount = 0;
 
@@ -79,8 +104,11 @@ contract WavePortal {
 
             if (isUnique) {
                 uniqueWavesData[uniqueCount].name = waveData[userAddress].name;
-                uniqueWavesData[uniqueCount].waveCount = waveData[userAddress].waveCount;
-                uniqueWavesData[uniqueCount].addressString = addressToString(userAddress);
+                uniqueWavesData[uniqueCount].waveCount = waveData[userAddress]
+                    .waveCount;
+                uniqueWavesData[uniqueCount].addressString = addressToString(
+                    userAddress
+                );
 
                 uniqueCount++;
             }
@@ -116,12 +144,16 @@ contract WavePortal {
 
         return totalWavesForName;
     }
-    
-    function addressToString(address _address) internal pure returns (string memory) {
+
+    function addressToString(
+        address _address
+    ) internal pure returns (string memory) {
         bytes32 _bytes = bytes32(uint256(uint160(_address)));
         bytes memory hexString = new bytes(42); // Address is 20 bytes, plus "0x" and 2 characters for each byte
         for (uint i = 0; i < 20; i++) {
-            bytes1 char = bytes1(uint8(uint256(_bytes) / (2**(8*(19 - i)))));
+            bytes1 char = bytes1(
+                uint8(uint256(_bytes) / (2 ** (8 * (19 - i))))
+            );
             bytes1 hi = bytes1(uint8(char) / 16);
             bytes1 lo = bytes1(uint8(char) - 16 * uint8(hi));
             hexString[i * 2] = toHexChar(hi);

@@ -5,11 +5,24 @@ import { ethers } from 'ethers';
 import abiJson from '../utils/WavePortal.json';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import {PersonIntroduction} from "../components/PersonIntroduction"
-import {WaveForm} from "../components/WaveForm"
+import { PersonIntroduction } from "../components/PersonIntroduction"
+import { WaveForm } from "../components/WaveForm"
+import { WavesList } from '@/components/WaveList';
 
 
 const inter = Inter({ subsets: ['latin'] })
+
+export type Wave = {
+  address: string,
+  timestamp: object,
+  name: string,
+  message: string
+}
+
+export type WaveRequestData = {
+  name: string,
+  message: string
+}
 
 //@ts-ignore
 const getEthereumObject = () => window.ethereum;
@@ -50,11 +63,11 @@ const findMetaMaskAccount = async (): Promise<string | null> => {
 
 export default function Home() {
 
-  const nameRef = useRef(null);
+  const [allWaves, setAllWaves] = useState<Wave[]>([]);
   const [totalWaves, setTotalWaves] = useState<Number | null>(null);
   const [currentAccount, setCurrentAccount] = useState<string>("");
   const [loader, setLoader] = useState<Boolean>(false);
-  const contractAddress = '0x1F46a2A44dC23cF403821AF6c4516dd54830aeC9';
+  const contractAddress = '0x2A2ED2F9F5Df8fA8442426c1618e2792972F3eDC';
   const contractABI = abiJson.abi;
 
   const connectWallet = async () => {
@@ -76,9 +89,9 @@ export default function Home() {
     }
   };
 
-  const wave = async (e: FormEvent) => {
+  const wave = async (data: WaveRequestData) => {
     try {
-      e.preventDefault();
+      const { name, message } = data;
 
       const ethereum = getEthereumObject();
       if (ethereum) {
@@ -94,7 +107,7 @@ export default function Home() {
 
         // Waving
         //@ts-ignore
-        const waveTxn = await wavePortalContract.wave(nameRef?.current?.value);
+        const waveTxn = await wavePortalContract.wave(name, message);
         const txnHash: string = waveTxn.hash;
         toast.promise(waveTxn.wait(), {
           loading: `Mining -- ${txnHash.slice(0, 3) + "..." + txnHash.slice(txnHash.length - 5, txnHash.length - 1)}`,
@@ -110,6 +123,7 @@ export default function Home() {
 
         count = await wavePortalContract.getTotalWaves();
         setTotalWaves(count);
+        await getAllWaves();
         console.log("Retrieved total wave count...", count);
 
       } else {
@@ -140,6 +154,44 @@ export default function Home() {
     }
   }
 
+  const getAllWaves = async () => {
+    try {
+      const ethereum = getEthereumObject();
+      if (ethereum) {
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        /*
+         * Call the getAllWaves method from your Smart Contract
+         */
+        const waves = await wavePortalContract.getAllWaves();
+
+
+        /*
+         * We only need address, timestamp, and message in our UI so let's
+         * pick those out
+         */
+        let wavesCleaned: Wave[] = [];
+        for (let i = waves.length - 1; i >= 0; i--) {
+          const wave = waves[i];
+          wavesCleaned.push({
+            address: wave.waver,
+            name: wave.name,
+            message: wave.message,
+            timestamp: new Date(Number(wave.timestamp) * 1000),
+          });
+        }
+
+        setAllWaves(wavesCleaned);
+      } else {
+        console.log("Ethereum object doesn't exist!")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     findMetaMaskAccount().then(async (account) => {
 
@@ -152,6 +204,7 @@ export default function Home() {
       getTotalWaves().then(waves => {
         setTotalWaves(waves);
       });
+      getAllWaves().then(_ => console.log());
     }
 
   }, [currentAccount]);
@@ -164,10 +217,11 @@ export default function Home() {
     imageUrl: 'https://avatars.githubusercontent.com/u/112852873?v=4', // Replace with the actual image URL
   };
 
+  console.log(allWaves)
 
   return (
     <main
-      className={`flex min-h-screen gap-y-10 flex-col bg-slate-100 items-center p-24 ${inter.className}`}
+      className={`flex min-h-screen bg-gradient-to-br from-blue-200 to-purple-400 gap-y-10 flex-col bg-slate-100 items-center p-24 ${inter.className}`}
     >
       <PersonIntroduction
         name={person.name}
@@ -179,9 +233,12 @@ export default function Home() {
 
       <WaveForm
         handleWave={wave}
-        nameRef={nameRef}
         currentAccount={currentAccount}
         connectWallet={connectWallet}
+      />
+
+      <WavesList 
+          waves={allWaves}
       />
 
     </main>

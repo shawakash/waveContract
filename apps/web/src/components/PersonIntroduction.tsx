@@ -17,7 +17,7 @@ export const PersonIntroduction: React.FC<{
                     className="w-16 h-16 rounded-full mb-4 sm:mb-0 sm:mr-4 sm:w-32 sm:h-32"
                 />
                 <div className="text-center sm:text-left">
-                    <h2 className="text-xl font-semibold">{name}</h2>
+                    <h2 className="text-2xl text-transparent bg-gradient-radial bg-clip-text  from-red-500 to-purple-500 font-semibold">{name}</h2>
                     <p className="text-gray-600">{title}</p>
                 </div>
                 <div className="flex flex-grow"></div>
