@@ -17,13 +17,14 @@
     "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
-    "typescript": "latest",
-    "@types/react": "latest",
     "@types/node": "latest",
+    "@types/react": "latest",
     "@types/react-dom": "latest",
     "autoprefixer": "latest",
     "postcss": "latest",
+    "storybook": "^7.4.5",
     "tailwindcss": "latest",
+    "typescript": "latest",
     "ui": "*"
   }
 }

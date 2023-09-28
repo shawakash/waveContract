@@ -5,7 +5,8 @@ import { ethers } from 'ethers';
 import abiJson from '../utils/WavePortal.json';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import {PersonIntroduction, WaveForm} from "ui"
+import {PersonIntroduction} from "../components/PersonIntroduction"
+import {WaveForm} from "../components/WaveForm"
 
 
 const inter = Inter({ subsets: ['latin'] })
