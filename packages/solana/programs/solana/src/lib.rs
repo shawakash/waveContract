@@ -7,6 +7,7 @@ pub mod solana {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+        println!("From program");
         Ok(())
     }
 }
