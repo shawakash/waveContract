@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Gif, GifRequestData, LinkForm } from './component/LinkForm';
-import { GifCards } from './component/GifCards';
+import { Gif, GifRequestData, LinkForm } from '../components/LinkForm';
+import { GifCards } from '../components/GifCards';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -11,14 +11,8 @@ const inter = Inter({ subsets: ['latin'] })
 const getSolanaObject = () => window?.solana;
 
 const getRandomTimestamp = (): string => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const seconds = date.getSeconds().toString().padStart(2, '0');
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  const currentDate = new Date();
+  return currentDate.toISOString(); // Returns the current timestamp in ISO format
 };
 
 // Create a dummyGifs array
@@ -46,6 +40,7 @@ const dummyGifs: Gif[] = TEST_GIFS.map((link, index) => ({
 export default function Home() {
 
   const [publicKey, setPublicKey] = useState<string>("");
+  const [gifs, setGifs] = useState<Gif[]>([]);
 
   const checkIfWalletIsConnected = async () => {
     const solana = getSolanaObject();
@@ -69,6 +64,12 @@ export default function Home() {
     return () => getSolanaObject().disconnect();
   }, []);
 
+  useEffect(() => {
+    if(publicKey) {
+      setGifs(dummyGifs);
+    }
+  }, [publicKey])
+
   const walletConnect = async () => {
     const solana = getSolanaObject();
     const response = await solana.connect({});
@@ -80,7 +81,16 @@ export default function Home() {
   }
 
   const handleGif = (data: GifRequestData) => {
-    
+
+    if(data) {
+      const newGif: Gif = {
+        ...data,
+        timestamp: getRandomTimestamp(),
+        address: ''
+      }
+      setGifs(gifs => [newGif, ...gifs]);
+    }
+
   }
 
   return (
@@ -109,7 +119,7 @@ export default function Home() {
 
 
         <GifCards
-          gifs={dummyGifs}
+          gifs={gifs}
         />
 
       </main>
