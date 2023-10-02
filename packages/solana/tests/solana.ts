@@ -1,5 +1,5 @@
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import * as anchor from "@project-serum/anchor";
+import { Program } from "@project-serum/anchor";
 import { Solana } from "../target/types/solana";
 
 // describe("solana", () => {
@@ -19,11 +19,33 @@ import { Solana } from "../target/types/solana";
 const main = async () => {
   console.log("🚀 Starting test...")
 
-  anchor.setProvider(anchor.AnchorProvider.env());
+  const provider = anchor.AnchorProvider.env();
+  anchor.setProvider(provider);
+
   const program = anchor.workspace.Solana as Program<Solana>;
-  const tx = await program.methods.initialize().rpc();
+
+  const baseAccount = anchor.web3.Keypair.generate();
+  
+  console.log(baseAccount.publicKey);
+
+
+
+  const tx = await program.rpc.initialize({
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    },
+    signers: [baseAccount],
+  });
   console.log("😇 From here")
   console.log("📝 Your transaction signature", tx);
+  console.log(await program.account.baseAccount.all())
+
+  // Fetch data from the account.
+  //@ts-ignore
+  const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log('👀 GIF Count', account.totalGifs)
 }
 
 const runMain = async () => {
