@@ -1,6 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { Solana } from "../target/types/solana";
+const { SystemProgram } = anchor.web3;
 
 // describe("solana", () => {
 //   // Configure the client to use the local cluster.
@@ -22,30 +23,27 @@ const main = async () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.Solana as Program<Solana>;
+  const program = anchor.workspace.Solana;
 
   const baseAccount = anchor.web3.Keypair.generate();
   
   console.log(baseAccount.publicKey);
 
 
-
-  const tx = await program.rpc.initialize({
+  let tx = await program.rpc.initialize({
     accounts: {
       baseAccount: baseAccount.publicKey,
       user: provider.wallet.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
+      systemProgram: SystemProgram.programId,
     },
     signers: [baseAccount],
   });
-  console.log("😇 From here")
+
   console.log("📝 Your transaction signature", tx);
-  console.log(await program.account.baseAccount.all())
 
   // Fetch data from the account.
-  //@ts-ignore
-  const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-  console.log('👀 GIF Count', account.totalGifs)
+  let account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log('👀 GIF Count', account.totalGifs.toString())
 }
 
 const runMain = async () => {

@@ -1,21 +1,22 @@
 use anchor_lang::prelude::*;
 
-declare_id!("FkqS1AfpbyAbD9TbguoBZpz6NzGMfbfjpxAZSePW5rFq");
+declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
-pub mod solana {
-    use super::*;
-
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        println!("From program");
-        let base_account = &mut ctx.accounts.base_account;
-        base_account.total_gifs = 0;
-        Ok(())
-    }
+pub mod myepicproject {
+  use super::*;
+  pub fn start_stuff_off(ctx: Context<StartStuffOff>) -> Result <()> {
+    // Get a reference to the account.
+    let base_account = &mut ctx.accounts.base_account;
+    // Initialize total_gifs.
+    base_account.total_gifs = 0;
+    Ok(())
+  }
 }
 
+// Attach certain variables to the StartStuffOff context.
 #[derive(Accounts)]
-pub struct Initialize<'info> {
+pub struct StartStuffOff<'info> {
     #[account(init, payer = user, space = 9000)]
     pub base_account: Account<'info, BaseAccount>,
     #[account(mut)]

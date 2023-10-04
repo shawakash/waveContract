@@ -77,7 +77,7 @@ export const LinkForm: React.FC<{
                 type="submit"
                 className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200"
               >
-                Wave to me 👋🏻👋🏻👋🏻
+                Add a Gif Ϭ
               </button>
             </div>
           </form >
