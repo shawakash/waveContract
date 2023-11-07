@@ -1,6 +1,4 @@
 import * as anchor from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
-import { Solana } from "../target/types/solana";
 const { SystemProgram } = anchor.web3;
 
 // describe("solana", () => {
