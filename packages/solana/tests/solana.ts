@@ -48,16 +48,17 @@ const main = async() => {
 
   // Adding More Gifs
   //@ts-ignore
-  await program.rpc.addGif({
+  await program.rpc.addGif("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXBhdDVsZDViYXQyc25sNTltdGRoenh2eGw3MG1pcWdyejBuYXp6ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6gDWzmAzrpi5DQU8/giphy.gif", {
     accounts: {
-      baseAccount: baseAccount.publicKey
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey
     }
   });
   
   
   // Fetch data from the account.
   account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-  console.log('👀 GIF Count', account.totalGifs.toString())
+  console.log('👀 GIF List', account.gifList)
 }
 
 (async () => {
