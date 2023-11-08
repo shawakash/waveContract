@@ -2,7 +2,6 @@
 members = [
     "programs/*"
 ]
-root=["programs/*"]
 
 [profile.release]
 overflow-checks = true
