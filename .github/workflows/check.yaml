@@ -1,0 +1,14 @@
+name: Check Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  no_op:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking Devops
+        run: echo "No actions to perform."
