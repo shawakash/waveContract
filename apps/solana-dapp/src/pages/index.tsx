@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Gif, GifRequestData, LinkForm } from '../components/LinkForm';
 import { GifCards } from '../components/GifCards';
+import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
+import { Program, AnchorProvider, web3, Idl } from '@project-serum/anchor';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,6 +16,24 @@ const getRandomTimestamp = (): string => {
   const currentDate = new Date();
   return currentDate.toISOString(); // Returns the current timestamp in ISO format
 };
+
+// SystemProgram is a reference to the Solana runtime!
+const { SystemProgram, Keypair } = web3;
+
+// Create a keypair for the account that will hold the GIF data.
+export let baseAccount = Keypair.generate();
+
+// This is the address of your solana program, if you forgot, just run solana address -k target/deploy/myepicproject-keypair.json
+export const programID = new PublicKey("2iPwRfZMtBJroE52FUUV4i5Jm75z18KTm3mJPt2N9ZDZ");
+
+// Set our network to devnet.
+export const network = clusterApiUrl('devnet');
+
+// Controls how we want to acknowledge when a transaction is "done".
+export const opts = {
+  preflightCommitment: "processed"   // "finalized" --> for the whole solana t verify your transaction
+}
+
 
 // Create a dummyGifs array
 const TEST_GIFS = [
@@ -40,7 +60,8 @@ const dummyGifs: Gif[] = TEST_GIFS.map((link, index) => ({
 export default function Home() {
 
   const [publicKey, setPublicKey] = useState<string>("");
-  const [gifs, setGifs] = useState<Gif[]>([]);
+  const [gifs, setGifs] = useState<Gif[] | null>(null);
+  const [hasAccount, setHasAccount] = useState<Boolean>(() => gifs == null ? false : true);
 
   const checkIfWalletIsConnected = async () => {
     const solana = getSolanaObject();
@@ -58,6 +79,52 @@ export default function Home() {
     }
   };
 
+  const createAccount = async () => {
+    try {
+      const provider = getProvider();
+      const program = await getProgram();
+
+      console.log("Ping..");
+      await program.rpc.startStuffOff({
+        accounts: {
+          baseAccount: baseAccount.publicKey,
+          user: provider.wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        },
+        signers: [baseAccount]
+      });
+      console.log("Created a new BaseAccount w/ address:", baseAccount.publicKey.toString())
+      setHasAccount(true);
+
+      await getGifList();
+    } catch (error) {
+      console.log("Error creating BaseAccount account:", error);
+    }
+  }
+
+  const getProgram = async (): Promise<Program<Idl>> => {
+    // Get metadata about your solana program
+    const idl = await Program.fetchIdl(programID, getProvider());
+    // Create a program that you can call
+    //@ts-ignore
+    return new Program(idl, programID, getProvider());
+  };
+
+  const getGifList = async () => {
+    try {
+      const program = await getProgram();
+      const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+
+      console.log("Got the account", account)
+      //@ts-ignore
+      setGifs(account.gifList)
+
+    } catch (error) {
+      console.log("Error in getGifList: ", error)
+      setGifs([]);
+    }
+  }
+
 
   useEffect(() => {
     checkIfWalletIsConnected().then();
@@ -65,8 +132,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if(publicKey) {
-      setGifs(dummyGifs);
+    if (publicKey) {
+      console.log('Fetching GIF list...');
+      getGifList();
     }
   }, [publicKey])
 
@@ -82,15 +150,27 @@ export default function Home() {
 
   const handleGif = (data: GifRequestData) => {
 
-    if(data) {
+    if (data) {
       const newGif: Gif = {
         ...data,
         timestamp: getRandomTimestamp(),
         address: ''
       }
+      //@ts-ignore
       setGifs(gifs => [newGif, ...gifs]);
     }
 
+  }
+
+  const getProvider = () => {
+    const solana = getSolanaObject();
+    //@ts-ignore
+    const connection = new Connection(network, opts.preflightCommitment);
+    const provider = new AnchorProvider(
+      //@ts-ignore
+      connection, solana, opts.preflightCommitment,
+    );
+    return provider;
   }
 
   return (
@@ -115,12 +195,14 @@ export default function Home() {
           handleGif={handleGif}
           connectWallet={walletConnect}
           currentAccount={publicKey}
+          createAccount={createAccount}
+          hasAccount={hasAccount}
         />
 
 
-        <GifCards
+        {gifs && <GifCards
           gifs={gifs}
-        />
+        />}
 
       </main>
     </>

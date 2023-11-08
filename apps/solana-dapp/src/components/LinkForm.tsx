@@ -16,8 +16,10 @@ export const LinkForm: React.FC<{
   handleGif: (data: GifRequestData) => void,
   currentAccount: string,
   connectWallet: () => void,
+  createAccount: () => void,
+  hasAccount: Boolean
 }> =
-  ({ handleGif, currentAccount, connectWallet }) => {
+  ({ handleGif, currentAccount, connectWallet, createAccount, hasAccount }) => {
 
     const nameRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
@@ -50,8 +52,9 @@ export const LinkForm: React.FC<{
                 placeholder="Gif Link"
                 defaultValue={""}
                 required
+                disabled={!hasAccount}
                 ref={linkRef}
-              />
+                />
             </div>
             <div className="mb-4">
               <label htmlFor="name" className="block text-gray-600 font-semibold">
@@ -65,6 +68,7 @@ export const LinkForm: React.FC<{
                 placeholder="Your Name(Optional)"
                 defaultValue={""}
                 ref={nameRef}
+                disabled={!hasAccount}
               />
             </div>
             <div className="flex flex-row gap-x-5">
@@ -73,12 +77,17 @@ export const LinkForm: React.FC<{
                   Connect Solana Wallet
                 </button>
               )}
-              <button
+              {!hasAccount && (
+                <button className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200" onClick={createAccount}>
+                  Create Account
+                </button>
+              )}
+              {hasAccount && <button
                 type="submit"
                 className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200"
               >
                 Add a Gif Ϭ
-              </button>
+              </button>}
             </div>
           </form >
         </div >
