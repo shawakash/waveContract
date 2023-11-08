@@ -43,8 +43,20 @@ const main = async() => {
   console.log("📝 Your transaction signature", tx);
 
   // Fetch data from the account.
-  //@ts-ignore
   let account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log('👀 GIF Count', account.totalGifs.toString())
+
+  // Adding More Gifs
+  //@ts-ignore
+  await program.rpc.addGif({
+    accounts: {
+      baseAccount: baseAccount.publicKey
+    }
+  });
+  
+  
+  // Fetch data from the account.
+  account = await program.account.baseAccount.fetch(baseAccount.publicKey);
   console.log('👀 GIF Count', account.totalGifs.toString())
 }
 
