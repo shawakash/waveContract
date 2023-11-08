@@ -16,14 +16,36 @@ import { Solana } from "../target/types/solana";
 // });
 
 
-const main = async () => {
-  anchor.setProvider(anchor.AnchorProvider.env());
+const { SystemProgram } = anchor.web3;
+
+const main = async() => {
+  console.log("🚀 Starting test...")
+
+  // Create and set the provider. We set it before but we needed to update it, so that it can communicate with our frontend!
+  const provider = anchor.AnchorProvider.env();
+  anchor.setProvider(provider);
 
   const program = anchor.workspace.Solana as Program<Solana>;
-  //@ts-ignore
-  const tx = await program.rpc.startStuffOff();
+	
+  // Create an account keypair for our program to use.
+  const baseAccount = anchor.web3.Keypair.generate();
+
+  // Call start_stuff_off, pass it the params it needs!
+  let tx = await program.rpc.startStuffOff({
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    },
+    signers: [baseAccount],
+  });
 
   console.log("📝 Your transaction signature", tx);
+
+  // Fetch data from the account.
+  //@ts-ignore
+  let account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log('👀 GIF Count', account.totalGifs.toString())
 }
 
 (async () => {
