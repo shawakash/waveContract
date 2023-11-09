@@ -6,6 +6,8 @@ import { Gif, GifRequestData, LinkForm } from '../components/LinkForm';
 import { GifCards } from '../components/GifCards';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { Program, AnchorProvider, web3, Idl } from '@project-serum/anchor';
+import { Buffer } from "buffer";
+import toast from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -58,6 +60,7 @@ const dummyGifs: Gif[] = TEST_GIFS.map((link, index) => ({
 
 
 export default function Home() {
+  
 
   const [publicKey, setPublicKey] = useState<string>("");
   const [gifs, setGifs] = useState<Gif[] | null>(null);
@@ -85,6 +88,7 @@ export default function Home() {
       const program = await getProgram();
 
       console.log("Ping..");
+
       await program.rpc.startStuffOff({
         accounts: {
           baseAccount: baseAccount.publicKey,
@@ -148,7 +152,7 @@ export default function Home() {
     setPublicKey(response.publicKey.toString());
   }
 
-  const handleGif = (data: GifRequestData) => {
+  const handleGif = async (data: GifRequestData) => {
 
     if (data) {
       const newGif: Gif = {
@@ -156,6 +160,37 @@ export default function Home() {
         timestamp: getRandomTimestamp(),
         address: ''
       }
+
+      try {
+        const provider = getProvider();
+        const program = await getProgram();
+
+        toast.promise(program.rpc.addGif(data.link, {
+          accounts: {
+            baseAccount: baseAccount.publicKey,
+            user: provider.wallet.publicKey
+          },
+        }), {
+          loading: "Adding Giff..",
+          success: "Added Successfully",
+          error: "Solana Error"
+        });
+
+        await program.rpc.addGif(data.link, {
+          accounts: {
+            baseAccount: baseAccount.publicKey,
+            user: provider.wallet.publicKey
+          },
+        });
+
+        console.log("GIF successfully sent to program", data.link);
+
+        await getGifList();
+
+      } catch (error) {
+        console.log("Error sending GIF:", error)
+      }
+
       //@ts-ignore
       setGifs(gifs => [newGif, ...gifs]);
     }

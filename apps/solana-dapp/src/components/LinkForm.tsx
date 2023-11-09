@@ -39,8 +39,8 @@ export const LinkForm: React.FC<{
 
     return (
       <>
-        <div className="w-[1000px]">
-          <form onSubmit={handleSubmit} className="bg-white hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
+        <div className="w-[1000px] bg-white hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
+          <form onSubmit={handleSubmit} className="">
             <div className="mb-4">
               <label htmlFor="link" className="block text-gray-600 font-semibold">
                 Gif Link
@@ -54,7 +54,7 @@ export const LinkForm: React.FC<{
                 required
                 disabled={!hasAccount}
                 ref={linkRef}
-                />
+              />
             </div>
             <div className="mb-4">
               <label htmlFor="name" className="block text-gray-600 font-semibold">
@@ -72,16 +72,6 @@ export const LinkForm: React.FC<{
               />
             </div>
             <div className="flex flex-row gap-x-5">
-              {!currentAccount && (
-                <button className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200" onClick={connectWallet}>
-                  Connect Solana Wallet
-                </button>
-              )}
-              {!hasAccount && (
-                <button className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200" onClick={createAccount}>
-                  Create Account
-                </button>
-              )}
               {hasAccount && <button
                 type="submit"
                 className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200"
@@ -90,6 +80,16 @@ export const LinkForm: React.FC<{
               </button>}
             </div>
           </form >
+          {!currentAccount && (
+            <button className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200" onClick={connectWallet}>
+              Connect Solana Wallet
+            </button>
+          )}
+          {!hasAccount && (
+            <button className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200" onClick={createAccount}>
+              Create Account
+            </button>
+          )}
         </div >
       </>
     );
