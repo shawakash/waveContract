@@ -8,6 +8,7 @@ import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { Program, AnchorProvider, web3, Idl } from '@project-serum/anchor';
 import { Buffer } from "buffer";
 import toast from 'react-hot-toast';
+import data from "../utils/keypair.json";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,7 +24,9 @@ const getRandomTimestamp = (): string => {
 const { SystemProgram, Keypair } = web3;
 
 // Create a keypair for the account that will hold the GIF data.
-export let baseAccount = Keypair.generate();
+const arr = Object.values(data._keypair.secretKey)
+const secret = new Uint8Array(arr)
+const baseAccount = web3.Keypair.fromSecretKey(secret)
 
 // This is the address of your solana program, if you forgot, just run solana address -k target/deploy/myepicproject-keypair.json
 export const programID = new PublicKey("2iPwRfZMtBJroE52FUUV4i5Jm75z18KTm3mJPt2N9ZDZ");
@@ -60,7 +63,7 @@ const dummyGifs: Gif[] = TEST_GIFS.map((link, index) => ({
 
 
 export default function Home() {
-  
+
 
   const [publicKey, setPublicKey] = useState<string>("");
   const [gifs, setGifs] = useState<Gif[] | null>(null);
