@@ -1,18 +1,10 @@
-# Turborepo starter
-
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
-
 ## What's inside?
 
-This Turborepo includes the following packages/apps:
+Apps on-chain
+
+- [Waver](https://wavers-bg2xh6fl4-shawakash.vercel.app/): on Ethererum
+
+- [Giffy](https://gifii-iaglmcssr-shawakash.vercel.app/): on Solana
 
 ### Apps and Packages
 
