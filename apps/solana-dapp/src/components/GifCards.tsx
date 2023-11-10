@@ -8,17 +8,23 @@ export const GifCards: React.FC<{ gifs: Gif[] }> = ({ gifs }) => {
     <div className="flex flex-wrap justify-center items-center gap-10">
       {gifs.map((gif, index) => (
         <div
-          key={index}
-          className="bg-white w-[400px] h-[380px] rounded-2xl flex flex-col gap-y-2  shadow-lg hover:shadow-2xl transition-all duration-300">
+          key={gif.uuid}
+          className=" inset-0  bg-opacity-30 bg-gray-200 backdrop-filter backdrop-blur-lg w-[400px] h-[380px] rounded-2xl flex flex-col gap-y-2  shadow-lg hover:shadow-2xl transition-all duration-300">
           <img
-            src={gif.link}
-            alt={gif.address.toString()}
+            src={gif.gifLink}
+            alt={gif.userAddress.toString()}
             className="w-[400px] h-[300px] rounded-t-2xl object-cover"
           />
-          <Link href={`https://explorer.solana.com/address/${gif.address.toString()}?cluster=devnet`}>
-            <p className="text-center text-gray-800">Address: <span className='text-gray-500'>{gif.address.toString().slice(0, 5)}...</span></p>
+          <Link target='self' href={`https://explorer.solana.com/address/${gif.userAddress.toString()}?cluster=devnet`}>
+            <div className="flex flex-row px-4 justify-between">
+              <p className="text-start text-slate-200 font-semibold tracking-wide">Address: </p>
+              <p className='text-slate-300'>{gif.userAddress.toString().slice(0, 25)}...</p>
+            </div>
           </Link>
-          <p className="text-center text-gray-500">{gif.name.toString()}</p>
+          <div className="flex flex-row px-4 justify-between">
+            <p className="text-center text-slate-100 font-bold">By {gif.name.toString()}</p>
+            <p className="text-center text-slate-200">Votes: <span className='text-slate-300'>{gif.votes.toString()}</span></p>
+          </div>
         </div>
       ))}
     </div>

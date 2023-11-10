@@ -52,21 +52,10 @@ const TEST_GIFS = [
   'https://media.giphy.com/media/4ilFRqgbzbx4c/giphy.gif',
 ];
 
-type List = {
-  gifLink: string,
-  name: string,
-  userAddress: PublicKey
-}
 
 
-const getGifs = (list: List[]) => {
-  const gifs = list.map((gif: List, _index: Number) => {
-    return {
-      link: gif.gifLink,
-      address: gif.userAddress,
-      name: gif.name
-    }
-  });
+const getGifs = (list: Gif[]) => {
+  const gifs = list.map((gif: Gif, _index: Number) => gif);
   return gifs;
 }
 
@@ -219,7 +208,7 @@ export default function Home() {
         <title>Solana</title>
       </Head>
       <main
-        className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-200 to-purple-500 items-center p-24 bg-blend-overlay ${inter.className}`}
+        className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-700 to-pink-500 items-center p-24 bg-blend-overlay ${inter.className}`}
       >
 
         {publicKey.length == 0 &&

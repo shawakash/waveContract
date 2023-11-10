@@ -2,9 +2,11 @@ import { PublicKey } from "@solana/web3.js";
 import React, { FormEvent, LegacyRef, useRef } from "react";
 
 export type Gif = {
-  address: PublicKey,
-  link: string,
-  name: string
+  userAddress: PublicKey,
+  gifLink: string,
+  name: string,
+  uuid: string,
+  votes: Number
 }
 
 export type GifRequestData = {
@@ -38,7 +40,7 @@ export const LinkForm: React.FC<{
 
     return (
       <>
-        <div className="w-[1000px] bg-white hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
+        <div className="w-[1000px] bg-gray-300 hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
           <form onSubmit={handleSubmit} className="">
             <div className="mb-4">
               <label htmlFor="link" className="block text-gray-600 font-semibold">
@@ -47,7 +49,7 @@ export const LinkForm: React.FC<{
               <input
                 id="link"
                 name="link"
-                className="w-full border rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
+                className="w-full border bg-gray-300 border-gray-300 rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
                 placeholder="Gif Link"
                 defaultValue={""}
                 required
@@ -63,7 +65,7 @@ export const LinkForm: React.FC<{
                 type="text"
                 id="name"
                 name="name"
-                className="w-full border rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
+                className="w-full border bg-gray-300 border-gray-300 rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
                 placeholder="Your Name(Optional)"
                 defaultValue={"Anonymous"}
                 ref={nameRef}
