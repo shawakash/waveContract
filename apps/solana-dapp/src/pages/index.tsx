@@ -55,7 +55,7 @@ const TEST_GIFS = [
 
 
 const getGifs = (list: Gif[]) => {
-  const gifs = list.map((gif: Gif, _index: Number) => gif);
+  const gifs = list.map((gif: Gif, _index: Number) => gif).reverse();
   return gifs;
 }
 
