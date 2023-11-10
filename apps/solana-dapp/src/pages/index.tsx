@@ -26,7 +26,7 @@ const { SystemProgram, Keypair } = web3;
 // Create a keypair for the account that will hold the GIF data.
 const arr = Object.values(data._keypair.secretKey)
 const secret = new Uint8Array(arr)
-const baseAccount = web3.Keypair.fromSecretKey(secret)
+const baseAccount = web3.Keypair.fromSecretKey(secret);
 
 // This is the address of your solana program, if you forgot, just run solana address -k target/deploy/myepicproject-keypair.json
 export const programID = new PublicKey("2iPwRfZMtBJroE52FUUV4i5Jm75z18KTm3mJPt2N9ZDZ");
@@ -52,14 +52,23 @@ const TEST_GIFS = [
   'https://media.giphy.com/media/4ilFRqgbzbx4c/giphy.gif',
 ];
 
-const dummyGifs: Gif[] = TEST_GIFS.map((link, index) => ({
-  address: link,
-  timestamp: getRandomTimestamp(),
-  name: `GIF ${index + 1}`,
-  link: `https://example.com/gif${index + 1}`,
-}));
+type List = {
+  gifLink: string,
+  name: string,
+  userAddress: PublicKey
+}
 
 
+const getGifs = (list: List[]) => {
+  const gifs = list.map((gif: List, _index: Number) => {
+    return {
+      link: gif.gifLink,
+      address: gif.userAddress,
+      name: gif.name
+    }
+  });
+  return gifs;
+}
 
 
 export default function Home() {
@@ -67,7 +76,7 @@ export default function Home() {
 
   const [publicKey, setPublicKey] = useState<string>("");
   const [gifs, setGifs] = useState<Gif[] | null>(null);
-  const [hasAccount, setHasAccount] = useState<Boolean>(() => gifs == null ? false : true);
+  const [hasAccount, setHasAccount] = useState<Boolean>(() => baseAccount.publicKey == null ? false : true);
 
   const checkIfWalletIsConnected = async () => {
     const solana = getSolanaObject();
@@ -124,7 +133,8 @@ export default function Home() {
 
       console.log("Got the account", account)
       //@ts-ignore
-      setGifs(account.gifList)
+      const gifs = getGifs(account.gifList);
+      setGifs(gifs);
 
     } catch (error) {
       console.log("Error in getGifList: ", error)
@@ -158,34 +168,27 @@ export default function Home() {
   const handleGif = async (data: GifRequestData) => {
 
     if (data) {
-      const newGif: Gif = {
-        ...data,
-        timestamp: getRandomTimestamp(),
-        address: ''
-      }
-
       try {
         const provider = getProvider();
         const program = await getProgram();
 
-        toast.promise(program.rpc.addGif(data.link, {
+        // toast.promise(program.rpc.addGif(data.link, data.name, {
+        //   accounts: {
+        //     baseAccount: baseAccount.publicKey,
+        //     user: provider.wallet.publicKey
+        //   },
+        // }), {
+        //   loading: "Adding Giff..",
+        //   success: "Added Successfully",
+        //   error: "Solana Error"
+        // });
+
+        await program.rpc.addGif(data.link, data.name, {
           accounts: {
             baseAccount: baseAccount.publicKey,
             user: provider.wallet.publicKey
           },
-        }), {
-          loading: "Adding Giff..",
-          success: "Added Successfully",
-          error: "Solana Error"
         });
-
-        await program.rpc.addGif(data.link, {
-          accounts: {
-            baseAccount: baseAccount.publicKey,
-            user: provider.wallet.publicKey
-          },
-        });
-
         console.log("GIF successfully sent to program", data.link);
 
         await getGifList();
@@ -195,7 +198,6 @@ export default function Home() {
       }
 
       //@ts-ignore
-      setGifs(gifs => [newGif, ...gifs]);
     }
 
   }
@@ -217,7 +219,7 @@ export default function Home() {
         <title>Solana</title>
       </Head>
       <main
-        className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-200 to-purple-500 items-center p-24 ${inter.className}`}
+        className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-200 to-purple-500 items-center p-24 bg-blend-overlay ${inter.className}`}
       >
 
         {publicKey.length == 0 &&

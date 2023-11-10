@@ -1,10 +1,10 @@
+import { PublicKey } from "@solana/web3.js";
 import React, { FormEvent, LegacyRef, useRef } from "react";
 
 export type Gif = {
-  address: string,
-  timestamp: string,
-  name: string,
-  link: string
+  address: PublicKey,
+  link: string,
+  name: string
 }
 
 export type GifRequestData = {
@@ -26,7 +26,6 @@ export const LinkForm: React.FC<{
 
     const handleSubmit = (e: FormEvent) => {
       e.preventDefault();
-
       const data = {
         //@ts-ignore
         name: nameRef.current.value,
@@ -66,7 +65,7 @@ export const LinkForm: React.FC<{
                 name="name"
                 className="w-full border rounded-md transition-all duration-200 py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
                 placeholder="Your Name(Optional)"
-                defaultValue={""}
+                defaultValue={"Anonymous"}
                 ref={nameRef}
                 disabled={!hasAccount}
               />

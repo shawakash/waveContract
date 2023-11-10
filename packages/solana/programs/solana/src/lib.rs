@@ -13,7 +13,7 @@ pub mod solana {
     Ok(())
   }
 
-  pub fn add_gif(ctx: Context<AddGif>, gif_link: String) -> Result <()> {
+  pub fn add_gif(ctx: Context<AddGif>, gif_link: String, name: String) -> Result <()> {
     let base_account = &mut ctx.accounts.base_account;
     let user = &mut ctx.accounts.user;
 
@@ -21,6 +21,7 @@ pub mod solana {
     let item = ItemStruct {
       gif_link: gif_link.to_string(),
       user_address: *user.to_account_info().key,
+      name: name
     };
 		
 	// Add it to the gif_list vector.
@@ -53,6 +54,7 @@ pub struct AddGif<'info> {
 pub struct ItemStruct {
     pub gif_link: String,
     pub user_address: Pubkey,
+    pub name: String
 }
 // Tell Solana what we want to store on this account.
 #[account]

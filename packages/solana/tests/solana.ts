@@ -48,7 +48,7 @@ const main = async() => {
 
   // Adding More Gifs
   //@ts-ignore
-  await program.rpc.addGif("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXBhdDVsZDViYXQyc25sNTltdGRoenh2eGw3MG1pcWdyejBuYXp6ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6gDWzmAzrpi5DQU8/giphy.gif", {
+  await program.rpc.addGif("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXBhdDVsZDViYXQyc25sNTltdGRoenh2eGw3MG1pcWdyejBuYXp6ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6gDWzmAzrpi5DQU8/giphy.gif", "Anonymus", {
     accounts: {
       baseAccount: baseAccount.publicKey,
       user: provider.wallet.publicKey
