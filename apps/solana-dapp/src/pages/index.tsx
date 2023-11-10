@@ -90,7 +90,7 @@ export default function Home() {
       setPublicKey(response.publicKey.toString());
 
     } else {
-      alert('Solana object not found! Get a Phantom Wallet 👻');
+      alert('Solana object not found! Get a Phantom Wallet 👻 And Connect to Devnet Network');
     }
   };
 

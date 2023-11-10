@@ -58,7 +58,28 @@ const main = async() => {
   
   // Fetch data from the account.
   account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-  console.log('👀 GIF List', account.gifList)
+  console.log('👀 GIF List', account.gifList);
+
+  //@ts-ignore
+  await program.rpc.upvote(account.gifList[0].uuid, {
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey
+    }
+  });
+
+  await program.rpc.addGif("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXBhdDVsZDViYXQyc25sNTltdGRoenh2eGw3MG1pcWdyejBuYXp6ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6gDWzmAzrpi5DQU8/giphy.gif", "Anonymus", {
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey
+    }
+  });
+  
+  
+  // Fetch data from the account.
+  account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log('👀 GIF List', account.gifList);
+
 }
 
 (async () => {
