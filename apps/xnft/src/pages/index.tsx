@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { Program, AnchorProvider, web3, Idl } from '@project-serum/anchor';
-import { Buffer } from "buffer";
-import toast from 'react-hot-toast';
 import dynamic from "next/dynamic";
 import { LinkForm } from '@/components/Container';
 
@@ -15,7 +13,6 @@ const WalletMultiButtonDynamic = dynamic(
   { ssr: false }
 );
 
-const inter = Inter({ subsets: ['latin'] })
 
 //@ts-ignore
 const getSolanaObject = () => window?.solana;
@@ -69,7 +66,7 @@ export default function Home() {
         <title>Solana</title>
       </Head>
       <main
-        className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-700 to-pink-500 items-center p-24 bg-blend-overlay ${inter.className}`}
+        className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-700 to-pink-500 items-center p-24 bg-blend-overlay`}
       >
 
 
