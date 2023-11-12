@@ -6,6 +6,14 @@ import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { Program, AnchorProvider, web3, Idl } from '@project-serum/anchor';
 import { Buffer } from "buffer";
 import toast from 'react-hot-toast';
+import dynamic from "next/dynamic";
+import { LinkForm } from '@/components/Container';
+
+// This is to disable SSR when using WalletMultiButton
+const WalletMultiButtonDynamic = dynamic(
+  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  { ssr: false }
+);
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -37,17 +45,21 @@ export default function Home() {
 
   useEffect(() => {
     checkIfWalletIsConnected().then();
-    return () => getSolanaObject().disconnect();
+    // return () => getSolanaObject().disconnect();
   }, []);
 
   const walletConnect = async () => {
     const solana = getSolanaObject();
-    const response = await solana.connect({});
-    console.log(
-      'Connected with Public Key:',
-      response.publicKey.toString()
-    );
-    setPublicKey(response.publicKey.toString());
+    try {
+      const response = await solana.connect({});
+      console.log(
+        'Connected with Public Key:',
+        response.publicKey.toString()
+      );
+      setPublicKey(response.publicKey.toString());
+    } catch (error) {
+      console.error(error)
+    }
   }
 
 
@@ -60,14 +72,25 @@ export default function Home() {
         className={`flex min-h-screen flex-col gap-y-10 bg-gradient-to-br from-blue-700 to-pink-500 items-center p-24 bg-blend-overlay ${inter.className}`}
       >
 
-        {publicKey.length == 0 &&
-          <button
-            onClick={walletConnect}
-            className=''
-          >
-            Connect Wallet
-          </button>
-        }
+
+        <div className="w-[1000px] min-h-[150px] bg-gray-300 hover:shadow-xl transition-all duration-200 rounded-lg shadow-md p-6">
+          {publicKey.length == 0 &&
+            <>
+              <WalletMultiButtonDynamic className="bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200 cta-button connect-wallet-button" />
+              <button
+                onClick={walletConnect}
+                className='bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-700 transition-all duration-200'
+              >
+                Connect Wallet
+              </button>
+            </>
+          }
+
+          {publicKey.length > 0 && <>
+            <LinkForm enable={false} />
+          </>}
+
+        </div>
 
       </main>
     </>
