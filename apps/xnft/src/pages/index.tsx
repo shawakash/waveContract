@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { Program, AnchorProvider, web3, Idl } from '@project-serum/anchor';
 import dynamic from "next/dynamic";
-import { LinkForm } from '@/components/Container';
+import { Container } from '@/components/Container';
 
 // This is to disable SSR when using WalletMultiButton
 const WalletMultiButtonDynamic = dynamic(
@@ -84,7 +84,7 @@ export default function Home() {
           }
 
           {publicKey.length > 0 && <>
-            <LinkForm enable={false} />
+            <Container enable={false} />
           </>}
 
         </div>

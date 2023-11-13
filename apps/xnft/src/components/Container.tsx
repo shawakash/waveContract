@@ -14,7 +14,7 @@ export type GifRequestData = {
   link: string
 }
 
-export const LinkForm: React.FC<{
+export const Container: React.FC<{
   enable: Boolean
 }> =
   ({ enable }) => {
