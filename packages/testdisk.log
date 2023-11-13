@@ -1,0 +1,61 @@
+
+
+Mon Nov 13 22:47:40 2023
+Command line: TestDisk
+
+TestDisk 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+OS: Darwin, kernel 23.0.0 (Darwin Kernel Version 23.0.0: Fri Sep 15 14:42:57 PDT 2023; root:xnu-10002.1.13~1/RELEASE_ARM64_T8112) arm64
+Compiler: GCC 4.2
+ext2fs lib: none, ntfs lib: none, reiserfs lib: none, ewf lib: none, curses lib: ncurses 6.0
+User is not root!
+Hard disk list
+
+No disk found
+
+TestDisk exited normally.
+
+
+Mon Nov 13 22:47:54 2023
+Command line: TestDisk
+
+TestDisk 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+OS: Darwin, kernel 23.0.0 (Darwin Kernel Version 23.0.0: Fri Sep 15 14:42:57 PDT 2023; root:xnu-10002.1.13~1/RELEASE_ARM64_T8112) arm64
+Compiler: GCC 4.2
+ext2fs lib: none, ntfs lib: none, reiserfs lib: none, ewf lib: none, curses lib: ncurses 6.0
+Hard disk list
+Disk /dev/rdisk1 - 524 MB / 500 MiB - 128000 sectors (RO), sector size=4096
+
+Partition table type defaults to EFI GPT
+Media is opened in read-only.
+Disk /dev/rdisk1 - 524 MB / 500 MiB (RO)
+Partition table type: Mac
+
+Analyse Disk /dev/rdisk1 - 524 MB / 500 MiB - 128000 sectors (RO)
+Current partition structure:
+Bad MAC partition, invalid block0 signature
+read_part_mac: bad DPME signature
+
+search_part()
+Disk /dev/rdisk1 - 524 MB / 500 MiB - 128000 sectors (RO)
+
+Results
+
+interface_write()
+ 
+No partition found or selected for recovery
+
+search_part()
+Disk /dev/rdisk1 - 524 MB / 500 MiB - 128000 sectors (RO)
+
+Results
+
+interface_write()
+ 
+No partition found or selected for recovery
+simulate write!
+
+TestDisk exited normally.
