@@ -13,9 +13,11 @@
     "@solana/spl-token": "^0.3.8",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react-ui": "^0.9.34",
+    "@solana/wallet-adapter-wallets": "^0.19.23",
     "next": "14.0.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "solana": "^1.0.7-development"
   },
   "devDependencies": {
