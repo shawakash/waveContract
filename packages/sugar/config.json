@@ -1,0 +1,24 @@
+{
+  "tokenStandard": "nft",
+  "number": 2,
+  "symbol": "xNFT",
+  "sellerFeeBasisPoints": 1,
+  "isMutable": true,
+  "isSequential": false,
+  "creators": [
+    {
+      "address": "3dd2Dyzyb12pkfShPMQn8HJWSMD8nag8ifuWy7dqNNct",
+      "share": 100
+    }
+  ],
+  "uploadMethod": "nft_storage",
+  "ruleSet": null,
+  "awsConfig": null,
+  "sdriveApiKey": null,
+  "nftStorageAuthToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDI4ODVjQkJhN2UyMTk5MUY3YjI1ZThEQzI2N2ZjRjgxYWEyQUE4RWUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5OTk2MDUwNzA2OCwibmFtZSI6ImFrYXNoIn0.s3U8crAgnzmCWKH2yMUn9_66MD-hUbLy60S7HihxZh8",
+  "shdwStorageAccount": null,
+  "pinataConfig": null,
+  "hiddenSettings": null,
+  "guards": null,
+  "maxEditionSupply": null
+}

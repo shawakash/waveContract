@@ -1,0 +1,34 @@
+{
+  "program": {
+    "candyMachine": "FG59UWjpercS1HRvQtFwfADLFWfDpqkqepGeSZJ7m5jn",
+    "candyGuard": "",
+    "candyMachineCreator": "5Wuckf517wEGtS1xdTi18yg5YfJUnNyrE5Ddrjb1UFpq",
+    "collectionMint": "BuZDNxxmkCGK8yTypyHxHwuzezVkPGFZmPEgSddPYWxK"
+  },
+  "items": {
+    "-1": {
+      "name": "Naruto",
+      "image_hash": "26da6a42bf8e0d6721eab577b81d4dbd0e977675ae11bba6152194a054c8abc5",
+      "image_link": "https://nftstorage.link/ipfs/bafybeidabfv2c4i5o63dqdvvrl7ko7atqja4whp44mcfytd6xy4m73fcxq/collection.png",
+      "metadata_hash": "a74fe18cc999e5874f4f9220a5cefd5731e335a508a84d246a2b17cd8c198cce",
+      "metadata_link": "https://nftstorage.link/ipfs/bafybeidl4cqizbzfn656pdoku6wmjwkb6mra54ttg2d4e5ao3iswr2qx4u/collection.json",
+      "onChain": true
+    },
+    "0": {
+      "name": "MadLad",
+      "image_hash": "890a1a87a81dee8cd92059b4689b00a500bda8d5477f3a045017838389b7a141",
+      "image_link": "https://nftstorage.link/ipfs/bafybeigr6ccehcr63yjbrrvktipfduhynkiq6mzqufkdo4zidzfex2g5am/0.png",
+      "metadata_hash": "46e243a19c533f15f3602a54d053899ee328b66b191e4c65cf6a4df95138be3c",
+      "metadata_link": "https://nftstorage.link/ipfs/bafybeicxtazinh3u72zridcuiheyxzvj2ptuzq4pe7pjd2bmcurpbldqmy/0.json",
+      "onChain": true
+    },
+    "1": {
+      "name": "Naruto",
+      "image_hash": "26da6a42bf8e0d6721eab577b81d4dbd0e977675ae11bba6152194a054c8abc5",
+      "image_link": "https://nftstorage.link/ipfs/bafybeigr6ccehcr63yjbrrvktipfduhynkiq6mzqufkdo4zidzfex2g5am/1.png",
+      "metadata_hash": "a74fe18cc999e5874f4f9220a5cefd5731e335a508a84d246a2b17cd8c198cce",
+      "metadata_link": "https://nftstorage.link/ipfs/bafybeicxtazinh3u72zridcuiheyxzvj2ptuzq4pe7pjd2bmcurpbldqmy/1.json",
+      "onChain": true
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
-    "name": "NAME_OF_NFT",
-    "symbol": "SYMBOL_OF_NFT",
+    "name": "Naruto",
+    "symbol": "xNFT",
     "description": "Collection of 10 numbers on the blockchain. This is the number 1/10.",
     "image": "1.png",
     "attributes": [
