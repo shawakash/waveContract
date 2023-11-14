@@ -1,3 +1,2 @@
-import * as data from "./keypair.json";
-
-export default data;
+export const BASEURL = 'http://localhost:3000';
+export const PORT = 3000;
